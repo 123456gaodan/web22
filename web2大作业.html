@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title> web大作业 </title>
+        <style>       	
+            .top{width: 2000px;height: 24px;background-color: #ccc;}
+            .head{width: 800px;height: 20px;position: absolute;left: 350px; overflow: hidden;top: 2px;}
+            .img{position: absolute;left: 250px;top: 2px;}            
+            .warning{position: absolute;width: 400px;right: -300px;}      
+        	*{padding:0;margin:0;}
+            ul,li{list-style:none;}
+            .box{width:1200px;height:400px;margin:100px auto;position: relative;overflow:hidden;top:-100px;}
+            .box>span{display: block;width:30px;height: 50px;text-align: center;cursor:pointer;top:175px;line-height: 50px;background: rgb(250,0,0);font-size: 30px;position: absolute;opacity: 0;}
+            .slider{width:8500px;position:absolute;left:-1200px;}
+            .slide{width:1200px;float:left;}         
+            #left{top: 170px;left:30px;}
+            #right{top: 170px;right: 30px;}
+            .nav{position: absolute;left:480px;bottom:30px;}
+            .nav>li{float: left;width: 20px;height: 20px;background: #ccc;cursor:pointer;margin:0 10px;border-radius: 50%;text-align: center;}
+            .nav .act{ background: red; }
+              
+        </style>
+
+        <script >        	
+        	function getStyle(obj, attr){
+        		if(obj.currentStyle){
+        			return obj.currentStyle[attr];
+        		} else {
+        			return getComputedStyle(obj, null)[attr];
+        		}
+        	}
+        	function animate(obj,json,callback){
+        		clearInterval(obj.timer);
+        		obj.timer = setInterval(function(){
+        			var isStop = true;
+	        		for(var attr in json){
+	        			var now = 0;
+	        			if(attr == 'opacity'){
+	        				now = parseInt(getStyle(obj,attr)*100);
+	        			}else{
+	        				now = parseInt(getStyle(obj,attr));
+	        			}
+	        			var speed = (json[attr] - now) / 8;
+	        			speed = speed>0?Math.ceil(speed):Math.floor(speed);
+	        			var cur = now + speed;
+	        			if(attr == 'opacity'){
+	        				obj.style[attr] = cur / 100;
+	        			}else{
+	        				obj.style[attr] = cur + 'px';
+	        			}
+	        			if(json[attr] !== cur){
+	        				isStop = false;
+		        		}
+	        		}
+	        		if(isStop){
+	        			clearInterval(obj.timer);
+	        			callback&&callback();
+	        		}
+	        	}, 30)
+        	}
+        </script>
+    </head>
+    <body>    
+        <div class="top" >
+                <div class="img"><img src="a15.png" alt=""></div>
+                <div class="head" id="head">
+                    <div class="warning" id="warning"><p style="color:red;font-size:14px">[温馨提示]最近有不少不法分子在网上骗人，请大家注意!</p></div>
+              </div>
+        </div>
+        <div id="box" class="box">
+            <div class="slider" id="slider">                        
+                <div class="slide"><img src="b1.png"></div>
+                <div class="slide"><img src="b2.png"></div>
+                <div class="slide"><img src="b3.png"></div>
+                <div class="slide"><img src="b4.png"></div>
+                <div class="slide"><img src="b5.png"></div>
+            </div>
+            <ul class="nav" id="nav">
+                <li class="act">1</li>
+                <li>2</li>
+                <li>3</li>
+                <li>4</li>
+                <li>5</li>
+            </ul>
+            <span id="left"></span>
+            <span id="right"></span>
+        </div>
+ 
+ <script>
+           var slider=document.getElementById("slider");
+           var left=document.getElementById("left");
+           var right=document.getElementById("right");
+           var index=1;
+           function first(){
+               index++;
+               navChange();
+               animate(slider,{left:-1200*index},function(){
+                   if(index === 6){
+                       slider.style.left="-1200px";
+                       index=1;
+                   }
+               });
+           }
+           function second(){
+               index--;
+               navChange();
+               animate(slider,{left:-1200*index},function(){
+                   if(index ===0){
+                       slider.style.left="-6000px";
+                       index=5;
+                   }
+               });
+           }
+           var time=setInterval(first,2000);
+           var box=document.getElementById("box");
+           box.onmouseover=function(){
+               animate(left,{opacity:50});
+               animate(right,{opacity:50});
+               clearInterval(time);
+           }
+           box.onmouseout=function(){
+               animate(left,{opacity:0});
+               animate(right,{opacity:0});
+               time=setInterval(first,2000);
+           }
+           right.onclick=first;
+           left.onclick=second;
+           var oNavlist=document.getElementById("nav").children;
+           var i;
+           for(i=0;i<oNavlist.length;i++){
+            oNavlist[i].idx=i;
+            oNavlist[i].onclick=function(){
+                index=this.idx+1;
+                animate(slider,{left:-1200*index});
+            }
+           }
+           function navChange(){
+               for(var i=0;i<oNavlist.length;i++){
+                oNavlist[i].className=" ";
+               }
+               if(index===6){
+                oNavlist[0].className="act";
+               }else if(index===0){
+                oNavlist[4].className="act";
+               }else{
+                oNavlist[index-1].className="act";
+               }
+           }
+           function getStyle(obj, style){
+            if(obj.currentStyle){
+                return obj.currentStyle[style];
+             } else {
+                  return getComputedStyle(obj)[style];
+             }
+         }
+         var warning = document.getElementById("warning");
+         onload = function(){
+          var a = setInterval(function(){
+            var now = parseInt(getStyle(warning,"right"));
+            warning.style.right = now+1+"px";
+            if(now>=700){
+              warning.style.right=-270+"px";
+            }
+          },10)
+         }
+
+
+
+       </script>
+
+    </body>
+</html>
+
+
